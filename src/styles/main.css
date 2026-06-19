@@ -1,20 +1,20 @@
 :root {
   color-scheme: light;
-  --bg: #eef2f6;
-  --surface: #ffffff;
-  --surface-soft: #f7f9fb;
-  --text: #15202b;
-  --muted: #607083;
-  --line: #d8dee8;
-  --line-strong: #bac5d3;
-  --brand: #10252b;
-  --brand-2: #0f766e;
-  --brand-soft: #e7f5f2;
-  --blue: #1d4ed8;
-  --yellow: #8a5a00;
-  --green: #116329;
-  --red: #a11616;
-  --shadow: 0 18px 36px rgba(24, 39, 56, 0.1);
+  --bg: #f7f1ea;
+  --surface: #fffdf8;
+  --surface-soft: #f3e8d8;
+  --text: #2f2520;
+  --muted: #756a60;
+  --line: #dccbb8;
+  --line-strong: #c9ad93;
+  --brand: #3c2f2f;
+  --brand-2: #c05621;
+  --brand-soft: #fce7d6;
+  --blue: #2f6f9f;
+  --yellow: #b7791f;
+  --green: #2f855a;
+  --red: #c53030;
+  --shadow: 0 18px 36px rgba(72, 54, 42, 0.12);
   --radius: 8px;
 }
 
@@ -59,7 +59,7 @@ button:disabled {
 button:focus-visible,
 input:focus-visible,
 .skip-link:focus-visible {
-  outline: 3px solid rgba(15, 118, 110, 0.32);
+  outline: 3px solid rgba(192, 86, 33, 0.32);
   outline-offset: 2px;
 }
 
@@ -97,7 +97,7 @@ dd {
 
 .command-bar {
   align-items: center;
-  background: var(--brand);
+  background: linear-gradient(135deg, #3c2f2f 0%, #7b341e 62%, #c05621 120%);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   color: #fff;
@@ -113,7 +113,7 @@ dd {
 }
 
 .eyebrow {
-  color: #6fb8b0;
+  color: #f6ad55;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0;
@@ -126,30 +126,22 @@ dd {
 }
 
 .save-status {
-  color: #c7d8dc;
+  color: rgba(255, 255, 255, 0.78);
   font-size: 14px;
 }
 
 .command-actions,
 .hero-actions,
 .drawer-actions,
+.mobile-actions {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 130px;
-  padding: 8px 6px;
-  text-align: center;
-  background: transparent;
-  vertical-align: middle;
-  display: flex;
   flex-wrap: nowrap;
-  gap: 4px;
-  min-width: 140px;
-  justify-content: flex-end;
-  flex: 0 0 auto;
 }
 
+.primary-action {
   margin: 0;
   line-height: 1;
   display: inline-flex;
@@ -163,7 +155,7 @@ dd {
 
 .secondary-action {
   background: var(--brand-soft);
-  border-color: #b8ded7;
+  border-color: #e9be9d;
   color: var(--brand);
   font-weight: 700;
 }
@@ -315,7 +307,7 @@ input {
 .segmented-control button.active {
   background: #fff;
   border-color: var(--line);
-  box-shadow: 0 1px 4px rgba(24, 39, 56, 0.08);
+  box-shadow: 0 1px 4px rgba(72, 54, 42, 0.08);
   color: var(--brand);
   font-weight: 700;
 }
@@ -420,7 +412,7 @@ input {
 }
 
 .import-summary {
-  background: var(--brand);
+  background: linear-gradient(135deg, #3c2f2f 0%, #7b341e 62%, #c05621 120%);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   color: #fff;
@@ -438,7 +430,7 @@ input {
 }
 
 .import-summary span {
-  color: #b8d0d4;
+  color: rgba(255, 255, 255, 0.72);
   font-size: 12px;
 }
 
@@ -606,8 +598,8 @@ td {
 }
 
 th {
-  background: #e5ebf2;
-  color: #243244;
+  background: #eadcc9;
+  color: var(--text);
   font-size: 13px;
   position: sticky;
   top: 0;
@@ -647,7 +639,7 @@ td {
 }
 
 tbody tr:nth-child(even) td {
-  background: #fbfcfe;
+  background: #fff9ef;
 }
 
 tbody tr:hover td {
@@ -683,22 +675,22 @@ tbody tr:hover td {
 }
 
 .item-status.active {
-  background: #e8efff;
+  background: #e6f2f8;
   color: var(--blue);
 }
 
 .item-status.attention {
-  background: #fff4d6;
+  background: #fcebc6;
   color: var(--yellow);
 }
 
 .item-status.done {
-  background: #e9f8ed;
+  background: #e4f3ea;
   color: var(--green);
 }
 
 .item-status.loss {
-  background: #fff0ef;
+  background: #fde4df;
   color: var(--red);
 }
 
@@ -716,7 +708,7 @@ tbody tr:hover td {
   background: var(--surface);
   border-left: 1px solid var(--line);
   bottom: 0;
-  box-shadow: -16px 0 34px rgba(24, 39, 56, 0.18);
+  box-shadow: -16px 0 34px rgba(72, 54, 42, 0.18);
   display: grid;
   gap: 14px;
   max-width: 440px;
@@ -730,7 +722,7 @@ tbody tr:hover td {
 }
 
 .drawer-backdrop {
-  background: rgba(16, 37, 43, 0.36);
+  background: rgba(60, 47, 47, 0.36);
   inset: 0;
   position: fixed;
   z-index: 14;

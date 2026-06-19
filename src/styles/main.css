@@ -16,6 +16,11 @@
   --red: #c53030;
   --shadow: 0 18px 36px rgba(72, 54, 42, 0.12);
   --radius: 8px;
+  --topbar-image: none;
+  --topbar-position-x: 50%;
+  --topbar-position-y: 50%;
+  --topbar-size: cover;
+  --topbar-overlay: 0.58;
 }
 
 * {
@@ -97,7 +102,13 @@ dd {
 
 .command-bar {
   align-items: center;
-  background: linear-gradient(135deg, #3c2f2f 0%, #7b341e 62%, #c05621 120%);
+  background:
+    linear-gradient(135deg, rgba(60, 47, 47, var(--topbar-overlay)) 0%, rgba(123, 52, 30, var(--topbar-overlay)) 62%, rgba(192, 86, 33, var(--topbar-overlay)) 120%),
+    var(--topbar-image),
+    linear-gradient(135deg, #3c2f2f 0%, #7b341e 62%, #c05621 120%);
+  background-position: center, var(--topbar-position-x) var(--topbar-position-y), center;
+  background-repeat: no-repeat;
+  background-size: cover, var(--topbar-size), cover;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   color: #fff;
@@ -209,7 +220,8 @@ dd {
 .empty-state,
 .group-hero,
 .setup-panel,
-.items-panel {
+.items-panel,
+.appearance-panel {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -442,6 +454,88 @@ input {
   display: grid;
   gap: 14px;
   padding: 16px;
+}
+
+.appearance-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.cover-preview {
+  align-items: end;
+  aspect-ratio: 16 / 7;
+  background:
+    linear-gradient(135deg, rgba(60, 47, 47, var(--topbar-overlay)) 0%, rgba(123, 52, 30, var(--topbar-overlay)) 62%, rgba(192, 86, 33, var(--topbar-overlay)) 120%),
+    var(--topbar-image),
+    linear-gradient(135deg, #3c2f2f 0%, #7b341e 62%, #c05621 120%);
+  background-position: center, var(--topbar-position-x) var(--topbar-position-y), center;
+  background-repeat: no-repeat;
+  background-size: cover, var(--topbar-size), cover;
+  border-radius: var(--radius);
+  color: #fff;
+  display: grid;
+  overflow: hidden;
+  padding: 14px;
+}
+
+.cover-preview span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+}
+
+.cover-preview strong {
+  font-size: 18px;
+}
+
+.file-picker {
+  background: #fff9ef;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+}
+
+.file-picker span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.file-picker input {
+  min-height: auto;
+  padding: 0;
+}
+
+.cover-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.cover-controls label {
+  display: grid;
+  gap: 6px;
+}
+
+.cover-controls span {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  font-size: 13px;
+  justify-content: space-between;
+}
+
+.cover-controls input {
+  accent-color: var(--brand-2);
+  min-height: auto;
+  padding: 0;
+}
+
+.cover-actions {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .panel-title {
@@ -752,6 +846,10 @@ tbody tr:hover td {
   padding: 10px 2px;
 }
 
+.mobile-bottom-tabs {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -844,5 +942,72 @@ tbody tr:hover td {
   .item-card dl,
   .detail-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 719px) {
+  .app-frame {
+    padding-bottom: 88px;
+  }
+
+  .workspace-shell {
+    display: block;
+  }
+
+  [data-mobile-panel]:not(.mobile-panel-active) {
+    display: none !important;
+  }
+
+  [data-mobile-panel].mobile-panel-active {
+    display: grid;
+  }
+
+  .active-workbench {
+    display: grid;
+  }
+
+  .appearance-panel {
+    margin-top: 14px;
+  }
+
+  .mobile-bottom-tabs {
+    background: rgba(255, 253, 248, 0.96);
+    border-top: 1px solid var(--line);
+    bottom: 0;
+    box-shadow: 0 -10px 24px rgba(72, 54, 42, 0.12);
+    display: grid;
+    gap: 4px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    left: 0;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    position: fixed;
+    right: 0;
+    z-index: 12;
+  }
+
+  .mobile-tab {
+    align-items: center;
+    background: transparent;
+    color: var(--muted);
+    display: grid;
+    gap: 2px;
+    justify-items: center;
+    min-height: 58px;
+    padding: 6px 4px;
+  }
+
+  .mobile-tab.active {
+    background: var(--brand-soft);
+    color: var(--brand-2);
+    font-weight: 700;
+  }
+
+  .tab-icon {
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .mobile-tab span:last-child {
+    font-size: 12px;
   }
 }

@@ -7,12 +7,28 @@
   const renderDashboard = window.PurchaseTrackerRenderDashboard.renderDashboard;
   const renderItems = window.PurchaseTrackerRenderItems.renderItems;
   const renderDrawer = window.PurchaseTrackerRenderDrawer.renderDrawer;
+  const APPEARANCE_KEY = "purchase-tracker-appearance-v1";
+  const DEFAULT_WORKSPACE_NAME = "Purchase Workspace";
+  const PREVIEW_MAX_WIDTH = 1600;
+  const PREVIEW_MAX_HEIGHT = 1000;
+  const COVER_OUTPUT_WIDTH = 1200;
+  const COVER_OUTPUT_HEIGHT = 525;
 
   const els = {
     activeWorkbench: document.querySelector("#activeWorkbench"),
+    applyCoverCrop: document.querySelector("#applyCoverCrop"),
     backfillAllButton: document.querySelector("#backfillAllButton"),
     backupButton: document.querySelector("#backupButton"),
     costRate: document.querySelector("#costRate"),
+    coverInput: document.querySelector("#coverInput"),
+    coverOverlay: document.querySelector("#coverOverlay"),
+    coverOverlayValue: document.querySelector("#coverOverlayValue"),
+    coverX: document.querySelector("#coverX"),
+    coverXValue: document.querySelector("#coverXValue"),
+    coverY: document.querySelector("#coverY"),
+    coverYValue: document.querySelector("#coverYValue"),
+    coverZoom: document.querySelector("#coverZoom"),
+    coverZoomValue: document.querySelector("#coverZoomValue"),
     drawerBackdrop: document.querySelector("#drawerBackdrop"),
     emptyNewGroupButton: document.querySelector("#emptyNewGroupButton"),
     emptyState: document.querySelector("#emptyState"),
@@ -32,13 +48,21 @@
     newGroupButton: document.querySelector("#newGroupButton"),
     quoteRate: document.querySelector("#quoteRate"),
     resetButton: document.querySelector("#resetButton"),
+    resetCover: document.querySelector("#resetCover"),
     saveStatus: document.querySelector("#saveStatus"),
     summaryGrid: document.querySelector("#summaryGrid"),
-    updateGroupButton: document.querySelector("#updateGroupButton")
+    updateGroupButton: document.querySelector("#updateGroupButton"),
+    workspaceNameInput: document.querySelector("#workspaceNameInput")
+  };
+  const coverState = {
+    image: null,
+    source: ""
   };
 
   appState.init();
+  initAppearance();
   bindEvents();
+  setMobileTab("overview");
   registerPwa();
   render();
 
@@ -59,6 +83,15 @@
       appState.state.groupSearch = event.target.value;
       render();
     });
+    els.coverInput.addEventListener("change", handleCoverFile);
+    els.applyCoverCrop.addEventListener("click", cropCoverImage);
+    els.resetCover.addEventListener("click", resetCoverImage);
+    [els.coverZoom, els.coverX, els.coverY, els.coverOverlay].forEach(input => {
+      input.addEventListener("input", () => {
+        setCoverVars();
+        saveAppearanceFromControls();
+      });
+    });
 
     document.addEventListener("click", handleClick);
     document.addEventListener("input", handleInput);
@@ -66,9 +99,18 @@
   }
 
   function handleClick(event) {
+    const mobileTab = event.target.closest("[data-mobile-tab]");
+    if (mobileTab) {
+      setMobileTab(mobileTab.dataset.mobileTab);
+      return;
+    }
+
     const groupButton = event.target.closest("[data-group-id]");
     if (groupButton) {
       appState.setActiveGroup(groupButton.dataset.groupId);
+      if (window.matchMedia("(max-width: 719px)").matches) {
+        setMobileTab("overview");
+      }
       render();
       return;
     }
@@ -96,6 +138,12 @@
   }
 
   function handleInput(event) {
+    if (event.target === els.workspaceNameInput) {
+      setWorkspaceName(event.target.value);
+      saveAppearanceFromControls();
+      return;
+    }
+
     const group = appState.getActiveGroup();
     if (!group) return;
 
@@ -206,6 +254,200 @@
     document.querySelectorAll(selector).forEach(button => {
       button.classList.toggle("active", button.dataset.groupFilter === value || button.dataset.itemFilter === value);
     });
+  }
+
+  function setMobileTab(tabName) {
+    document.querySelectorAll("[data-mobile-tab]").forEach(button => {
+      const active = button.dataset.mobileTab === tabName;
+      button.classList.toggle("active", active);
+      if (active) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
+    });
+    document.querySelectorAll("[data-mobile-panel]").forEach(panel => {
+      panel.classList.toggle("mobile-panel-active", panel.dataset.mobilePanel === tabName);
+    });
+  }
+
+  function loadAppearance() {
+    try {
+      return JSON.parse(localStorage.getItem(APPEARANCE_KEY) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function saveAppearance(appearance) {
+    localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearance));
+  }
+
+  function initAppearance() {
+    const appearance = {
+      workspaceName: DEFAULT_WORKSPACE_NAME,
+      coverImage: "",
+      zoom: 100,
+      x: 50,
+      y: 50,
+      overlay: 58,
+      ...loadAppearance()
+    };
+
+    coverState.source = appearance.coverImage || "";
+    if (coverState.source) {
+      loadImage(coverState.source).then(image => {
+        coverState.image = image;
+      }).catch(() => {
+        coverState.image = null;
+      });
+    }
+
+    els.workspaceNameInput.value = appearance.workspaceName;
+    els.coverZoom.value = appearance.zoom;
+    els.coverX.value = appearance.x;
+    els.coverY.value = appearance.y;
+    els.coverOverlay.value = appearance.overlay;
+    setWorkspaceName(appearance.workspaceName);
+    setCoverImage(appearance.coverImage || "");
+    setCoverVars();
+  }
+
+  function setWorkspaceName(value) {
+    const name = value.trim() || DEFAULT_WORKSPACE_NAME;
+    document.querySelectorAll("[data-workspace-name]").forEach(element => {
+      element.textContent = name;
+    });
+  }
+
+  function saveAppearanceFromControls(extra = {}) {
+    saveAppearance({
+      workspaceName: els.workspaceNameInput.value.trim() || DEFAULT_WORKSPACE_NAME,
+      coverImage: coverState.source,
+      zoom: Number(els.coverZoom.value),
+      x: Number(els.coverX.value),
+      y: Number(els.coverY.value),
+      overlay: Number(els.coverOverlay.value),
+      ...extra
+    });
+  }
+
+  function setCoverVars() {
+    const zoom = Number(els.coverZoom.value);
+    const x = Number(els.coverX.value);
+    const y = Number(els.coverY.value);
+    const overlay = Number(els.coverOverlay.value);
+
+    document.documentElement.style.setProperty("--topbar-size", `${zoom}% auto`);
+    document.documentElement.style.setProperty("--topbar-position-x", `${x}%`);
+    document.documentElement.style.setProperty("--topbar-position-y", `${y}%`);
+    document.documentElement.style.setProperty("--topbar-overlay", (overlay / 100).toFixed(2));
+    els.coverZoomValue.textContent = `${zoom}%`;
+    els.coverXValue.textContent = `${x}%`;
+    els.coverYValue.textContent = `${y}%`;
+    els.coverOverlayValue.textContent = `${overlay}%`;
+  }
+
+  function setCoverImage(src) {
+    document.documentElement.style.setProperty("--topbar-image", src ? `url("${src}")` : "none");
+  }
+
+  function canvasToJpeg(canvas, quality = 0.9) {
+    return canvas.toDataURL("image/jpeg", quality);
+  }
+
+  function normalizeImage(image) {
+    const scale = Math.min(
+      1,
+      PREVIEW_MAX_WIDTH / image.naturalWidth,
+      PREVIEW_MAX_HEIGHT / image.naturalHeight
+    );
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    return canvasToJpeg(canvas);
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.addEventListener("load", () => resolve(image));
+      image.addEventListener("error", reject);
+      image.src = src;
+    });
+  }
+
+  async function handleCoverFile(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const source = await readFileAsDataUrl(file);
+      const sourceImage = await loadImage(source);
+      const normalizedSource = normalizeImage(sourceImage);
+      const normalizedImage = await loadImage(normalizedSource);
+
+      coverState.image = normalizedImage;
+      coverState.source = normalizedSource;
+      setCoverImage(normalizedSource);
+      setCoverVars();
+      saveAppearanceFromControls();
+    } catch (error) {
+      console.error(error);
+      resetCoverImage();
+    }
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => resolve(reader.result));
+      reader.addEventListener("error", reject);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function cropCoverImage() {
+    if (!coverState.image) return;
+
+    const zoom = Number(els.coverZoom.value) / 100;
+    const xRatio = Number(els.coverX.value) / 100;
+    const yRatio = Number(els.coverY.value) / 100;
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    const image = coverState.image;
+    const scale = Math.max(COVER_OUTPUT_WIDTH / image.naturalWidth, COVER_OUTPUT_HEIGHT / image.naturalHeight) * zoom;
+    const drawWidth = image.naturalWidth * scale;
+    const drawHeight = image.naturalHeight * scale;
+    const drawX = (COVER_OUTPUT_WIDTH - drawWidth) * xRatio;
+    const drawY = (COVER_OUTPUT_HEIGHT - drawHeight) * yRatio;
+
+    canvas.width = COVER_OUTPUT_WIDTH;
+    canvas.height = COVER_OUTPUT_HEIGHT;
+    context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+    coverState.source = canvasToJpeg(canvas);
+    loadImage(coverState.source).then(image => {
+      coverState.image = image;
+    });
+    setCoverImage(coverState.source);
+    els.coverZoom.value = "100";
+    els.coverX.value = "50";
+    els.coverY.value = "50";
+    setCoverVars();
+    saveAppearanceFromControls({ zoom: 100, x: 50, y: 50 });
+  }
+
+  function resetCoverImage() {
+    coverState.image = null;
+    coverState.source = "";
+    els.coverInput.value = "";
+    els.coverZoom.value = "100";
+    els.coverX.value = "50";
+    els.coverY.value = "50";
+    els.coverOverlay.value = "58";
+    setCoverImage("");
+    setCoverVars();
+    saveAppearanceFromControls({ coverImage: "" });
   }
 
   function openImporter(mode) {

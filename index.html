@@ -14,7 +14,7 @@
   <div class="app-frame">
     <header class="command-bar">
       <div class="brand-block">
-        <p class="eyebrow">Purchase Workspace</p>
+        <p class="eyebrow" data-workspace-name>Purchase Workspace</p>
         <h1>代購作業台</h1>
         <p id="saveStatus" class="save-status" aria-live="polite">本機資料準備中</p>
       </div>
@@ -27,7 +27,7 @@
     </header>
 
     <main class="workspace-shell">
-      <aside class="group-sidebar" aria-label="代購團清單">
+      <aside class="group-sidebar" data-mobile-panel="groups" aria-label="代購團清單">
         <div class="sidebar-head">
           <div>
             <h2>代購團</h2>
@@ -47,7 +47,7 @@
       </aside>
 
       <section class="workbench" aria-label="代購團作業區">
-        <section id="emptyState" class="empty-state">
+        <section id="emptyState" class="empty-state" data-mobile-panel="overview">
           <div>
             <p class="eyebrow">Start</p>
             <h2>建立第一個代購團</h2>
@@ -57,7 +57,7 @@
         </section>
 
         <section id="activeWorkbench" class="active-workbench" hidden>
-          <div class="group-hero">
+          <div class="group-hero" data-mobile-panel="overview">
             <div>
               <p class="eyebrow">Current Group</p>
               <label class="group-name-field">
@@ -72,9 +72,9 @@
             </div>
           </div>
 
-          <section id="importSummary" class="import-summary" aria-live="polite"></section>
+          <section id="importSummary" class="import-summary" data-mobile-panel="overview" aria-live="polite"></section>
 
-          <section class="setup-panel" aria-label="成本設定">
+          <section class="setup-panel" data-mobile-panel="settings" aria-label="成本設定">
             <div class="panel-title">
               <div>
                 <h3>成本設定</h3>
@@ -94,9 +94,9 @@
             </div>
           </section>
 
-          <section id="summaryGrid" class="summary-grid" aria-label="代購團彙總"></section>
+          <section id="summaryGrid" class="summary-grid" data-mobile-panel="overview" aria-label="代購團彙總"></section>
 
-          <section class="items-panel" id="itemsRegion">
+          <section class="items-panel" id="itemsRegion" data-mobile-panel="items">
             <div class="items-toolbar">
               <div>
                 <h3>商品採購工作表</h3>
@@ -137,8 +137,73 @@
             </div>
           </section>
         </section>
+
+        <section class="appearance-panel" data-mobile-panel="settings" aria-label="外觀設定">
+          <div class="panel-title">
+            <div>
+              <h3>Topbar 外觀</h3>
+              <p>本機外觀設定</p>
+            </div>
+          </div>
+          <div class="cover-preview" aria-label="Topbar 底圖預覽">
+            <div>
+              <span>Preview</span>
+              <strong data-workspace-name>Purchase Workspace</strong>
+            </div>
+          </div>
+          <label class="search-field">
+            <span>工作區名稱</span>
+            <input id="workspaceNameInput" type="text" value="Purchase Workspace" maxlength="32">
+          </label>
+          <label class="file-picker">
+            <strong>選擇 Topbar 底圖</strong>
+            <span>JPG、PNG、WebP</span>
+            <input id="coverInput" type="file" accept="image/*">
+          </label>
+          <div class="cover-controls">
+            <label>
+              <span>縮放 <output id="coverZoomValue">100%</output></span>
+              <input id="coverZoom" type="range" min="100" max="220" value="100">
+            </label>
+            <label>
+              <span>水平位置 <output id="coverXValue">50%</output></span>
+              <input id="coverX" type="range" min="0" max="100" value="50">
+            </label>
+            <label>
+              <span>垂直位置 <output id="coverYValue">50%</output></span>
+              <input id="coverY" type="range" min="0" max="100" value="50">
+            </label>
+            <label>
+              <span>文字遮罩 <output id="coverOverlayValue">58%</output></span>
+              <input id="coverOverlay" type="range" min="20" max="80" value="58">
+            </label>
+          </div>
+          <div class="cover-actions">
+            <button id="applyCoverCrop" class="secondary-action" type="button">套用裁切</button>
+            <button id="resetCover" class="ghost-action" type="button">重設底圖</button>
+          </div>
+        </section>
       </section>
     </main>
+
+    <nav class="mobile-bottom-tabs" aria-label="手機版主要導覽">
+      <button class="mobile-tab active" type="button" data-mobile-tab="overview" aria-current="page">
+        <span class="tab-icon" aria-hidden="true">▦</span>
+        <span>總覽</span>
+      </button>
+      <button class="mobile-tab" type="button" data-mobile-tab="items">
+        <span class="tab-icon" aria-hidden="true">☰</span>
+        <span>品項</span>
+      </button>
+      <button class="mobile-tab" type="button" data-mobile-tab="groups">
+        <span class="tab-icon" aria-hidden="true">◎</span>
+        <span>群組</span>
+      </button>
+      <button class="mobile-tab" type="button" data-mobile-tab="settings">
+        <span class="tab-icon" aria-hidden="true">⚙</span>
+        <span>管理</span>
+      </button>
+    </nav>
   </div>
 
   <aside id="itemDrawer" class="item-drawer" aria-label="商品詳情" hidden></aside>

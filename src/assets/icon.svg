@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="代購作業台">
+  <rect width="512" height="512" rx="96" fill="#10252b"/>
+  <path d="M142 166h228l-18 194H160l-18-194Z" fill="#e8f5f2"/>
+  <path d="M190 166c0-42 26-70 66-70s66 28 66 70" fill="none" stroke="#26a69a" stroke-width="30" stroke-linecap="round"/>
+  <path d="M190 245h132M190 300h88" stroke="#10252b" stroke-width="28" stroke-linecap="round"/>
+</svg>

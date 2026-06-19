@@ -1,0 +1,19 @@
+{
+  "name": "代購作業台",
+  "short_name": "代購作業台",
+  "description": "管理代購團、訂單匯入、採購進度與預估獲利。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef2f6",
+  "theme_color": "#10252b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./src/assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

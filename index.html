@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10252b">
+  <title>代購作業台</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./src/styles/main.css">
+</head>
+<body>
+  <a class="skip-link" href="#itemsRegion">跳到商品清單</a>
+
+  <div class="app-frame">
+    <header class="command-bar">
+      <div class="brand-block">
+        <p class="eyebrow">Purchase Workspace</p>
+        <h1>代購作業台</h1>
+        <p id="saveStatus" class="save-status" aria-live="polite">本機資料準備中</p>
+      </div>
+      <div class="command-actions">
+        <button id="installButton" class="ghost-action" type="button" hidden>安裝到手機</button>
+        <button id="backupButton" class="ghost-action" type="button">備份資料</button>
+        <button id="newGroupButton" class="primary-action" type="button">新增代購團</button>
+      </div>
+      <input id="fileInput" type="file" accept=".xlsx" hidden>
+    </header>
+
+    <main class="workspace-shell">
+      <aside class="group-sidebar" aria-label="代購團清單">
+        <div class="sidebar-head">
+          <div>
+            <h2>代購團</h2>
+            <p id="groupCount">0 團</p>
+          </div>
+        </div>
+        <label class="search-field">
+          <span>搜尋代購團</span>
+          <input id="groupSearchInput" type="search" placeholder="輸入團名">
+        </label>
+        <div class="segmented-control" aria-label="代購團狀態篩選">
+          <button type="button" data-group-filter="all" class="active">全部</button>
+          <button type="button" data-group-filter="active">進行中</button>
+          <button type="button" data-group-filter="attention">需處理</button>
+        </div>
+        <div id="groupList" class="group-list"></div>
+      </aside>
+
+      <section class="workbench" aria-label="代購團作業區">
+        <section id="emptyState" class="empty-state">
+          <div>
+            <p class="eyebrow">Start</p>
+            <h2>建立第一個代購團</h2>
+            <p>匯入訂單 Excel 後，系統會依商品名稱彙整數量，並建立可追蹤採購進度與獲利的作業台。</p>
+          </div>
+          <button id="emptyNewGroupButton" class="primary-action" type="button">新增代購團</button>
+        </section>
+
+        <section id="activeWorkbench" class="active-workbench" hidden>
+          <div class="group-hero">
+            <div>
+              <p class="eyebrow">Current Group</p>
+              <label class="group-name-field">
+                <span>代購團名稱</span>
+                <input id="groupNameInput" type="text" placeholder="輸入代購團名稱">
+              </label>
+              <p id="groupMeta">尚無匯入資料</p>
+            </div>
+            <div class="hero-actions">
+              <button id="updateGroupButton" class="secondary-action" type="button">更新此團訂單</button>
+              <button id="exportGroupButton" class="ghost-action" type="button">匯出清單</button>
+            </div>
+          </div>
+
+          <section id="importSummary" class="import-summary" aria-live="polite"></section>
+
+          <section class="setup-panel" aria-label="成本設定">
+            <div class="panel-title">
+              <div>
+                <h3>成本設定</h3>
+                <p>對客報價匯率用於回推日幣原價；實際成本匯率用於計算採購成本與獲利。</p>
+              </div>
+              <button id="resetButton" class="danger-ghost" type="button">清除此團手動資料</button>
+            </div>
+            <div class="rate-grid">
+              <label>
+                <span>對客報價匯率</span>
+                <input id="quoteRate" type="number" inputmode="decimal" min="0" step="0.001" placeholder="例：0.235">
+              </label>
+              <label>
+                <span>實際成本匯率</span>
+                <input id="costRate" type="number" inputmode="decimal" min="0" step="0.001" placeholder="例：0.215">
+              </label>
+            </div>
+          </section>
+
+          <section id="summaryGrid" class="summary-grid" aria-label="代購團彙總"></section>
+
+          <section class="items-panel" id="itemsRegion">
+            <div class="items-toolbar">
+              <div>
+                <h3>商品採購工作表</h3>
+                <p id="itemsHint">選擇篩選條件後，逐項維護日幣原價與已代購數量。</p>
+              </div>
+              <div class="segmented-control item-filters" aria-label="商品篩選">
+                <button type="button" data-item-filter="all" class="active">全部</button>
+                <button type="button" data-item-filter="pending">待代購</button>
+                <button type="button" data-item-filter="done">已完成</button>
+                <button type="button" data-item-filter="missing-cost">缺成本</button>
+                <button type="button" data-item-filter="loss">低利潤</button>
+                <button type="button" data-item-filter="new">本次新增</button>
+              </div>
+              <button id="backfillAllButton" class="secondary-action" type="button">全部回推日幣</button>
+            </div>
+
+            <div class="mobile-items" id="mobileItems"></div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">商品</th>
+                    <th scope="col">狀態</th>
+                    <th scope="col">訂購</th>
+                    <th scope="col">已買</th>
+                    <th scope="col">待買</th>
+                    <th scope="col">訂單單價</th>
+                    <th scope="col">日幣原價</th>
+                    <th scope="col">成本</th>
+                    <th scope="col">單件利潤</th>
+                    <th scope="col">總利潤</th>
+                    <th scope="col">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="itemsBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <aside id="itemDrawer" class="item-drawer" aria-label="商品詳情" hidden></aside>
+  <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
+
+  <script src="./src/storage.js"></script>
+  <script src="./src/calculations.js"></script>
+  <script src="./src/xlsx-reader.js"></script>
+  <script src="./src/state.js"></script>
+  <script src="./src/render/groups.js"></script>
+  <script src="./src/render/dashboard.js"></script>
+  <script src="./src/render/items.js"></script>
+  <script src="./src/render/drawer.js"></script>
+  <script src="./src/app.js"></script>
+</body>
+</html>

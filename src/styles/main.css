@@ -218,6 +218,7 @@ dd {
 
 .group-sidebar,
 .empty-state,
+.guide-panel,
 .group-hero,
 .setup-panel,
 .items-panel,
@@ -395,6 +396,37 @@ input {
   display: grid;
   gap: 16px;
   padding: 22px;
+}
+
+.guide-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 16px;
+}
+
+.guide-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.guide-card {
+  background: #fff9ef;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--brand-2);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+}
+
+.guide-card strong {
+  font-size: 15px;
+}
+
+.guide-card p {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .active-workbench {
@@ -872,6 +904,10 @@ tbody tr:hover td {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .guide-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .rate-grid {
     grid-template-columns: repeat(2, minmax(180px, 260px));
   }
@@ -922,6 +958,10 @@ tbody tr:hover td {
 
   .summary-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .guide-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

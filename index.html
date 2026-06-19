@@ -56,6 +56,33 @@
           <button id="emptyNewGroupButton" class="primary-action" type="button">新增代購團</button>
         </section>
 
+        <section class="guide-panel" data-mobile-panel="overview" aria-label="使用重點">
+          <div class="panel-title">
+            <div>
+              <p class="eyebrow">Quick Guide</p>
+              <h3>使用重點</h3>
+            </div>
+          </div>
+          <div class="guide-grid">
+            <article class="guide-card">
+              <strong>1. 先建立代購團</strong>
+              <p>從賣貨便匯出訂單 Excel，再用「新增代購團」匯入。</p>
+            </article>
+            <article class="guide-card">
+              <strong>2. 設定此團匯率</strong>
+              <p>每個代購團都有自己的報價匯率與成本匯率，不會影響其他團。</p>
+            </article>
+            <article class="guide-card">
+              <strong>3. 維護商品進度</strong>
+              <p>補上日幣原價與已代購數量，系統會自動估算成本與獲利。</p>
+            </article>
+            <article class="guide-card">
+              <strong>4. 定期備份資料</strong>
+              <p>資料存在目前裝置本機，正式使用時建議定期匯出備份。</p>
+            </article>
+          </div>
+        </section>
+
         <section id="activeWorkbench" class="active-workbench" hidden>
           <div class="group-hero" data-mobile-panel="overview">
             <div>
@@ -74,11 +101,11 @@
 
           <section id="importSummary" class="import-summary" data-mobile-panel="overview" aria-live="polite"></section>
 
-          <section class="setup-panel" data-mobile-panel="settings" aria-label="成本設定">
+          <section class="setup-panel" data-mobile-panel="settings" aria-label="此團匯率與成本設定">
             <div class="panel-title">
               <div>
-                <h3>成本設定</h3>
-                <p>對客報價匯率用於回推日幣原價；實際成本匯率用於計算採購成本與獲利。</p>
+                <h3>此團匯率設定</h3>
+                <p>每個代購團會獨立保存匯率。對客報價匯率用於回推日幣原價；實際成本匯率用於計算採購成本與獲利。</p>
               </div>
               <button id="resetButton" class="danger-ghost" type="button">清除此團手動資料</button>
             </div>
